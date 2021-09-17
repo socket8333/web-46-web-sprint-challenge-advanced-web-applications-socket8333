@@ -1,11 +1,59 @@
-import React from "react";
+import React, {useState} from "react";
+import axios from 'axios';
+import history from "../helpers/history";
 
 const Login = () => {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
-  const error = "";
+  const [state, setState] = useState({
+    credentials: {
+      username: '',
+      password: ''
+    }
+  })
+
+  const [error, setError] = useState("")
+  // const error = "";
   //replace with error state
+
+ const handleChange = e => {
+    setState({
+      credentials: {
+        ...state.credentials,
+        [e.target.name]: e.target.value
+      }
+    });
+    if (state.credentials.username === "" || state.credentials.password ==="") {
+      setError("Username or Password not valid.")
+    } else setError("")
+  };
+
+
+  // setError(()=>{
+  //   if (state.credentials.username === "" || state.credentials.password ==="") {
+  //     return "Username or Password not valid."
+  //   }
+  // })
+
+
+ const login = e => {
+    e.preventDefault();
+
+    axios.post("http://localhost:5000/api/login", state.credentials)
+      .then (res => {
+        // console.log("This is it", res.data)
+        localStorage.setItem("token",res.data.payload)
+        console.log("props history")
+        history.push('/bubbles');
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  };
+
+
 
   return (
     <div>
@@ -13,6 +61,24 @@ const Login = () => {
       <div data-testid="loginForm" className="login-form">
         <h2>Build login form here</h2>
       </div>
+
+      <form onSubmit={login}>
+          <input
+            type="text"
+            name="username"
+            value={state.credentials.username}
+            onChange={handleChange}
+          />
+          <input
+            type="password"
+            name="password"
+            value={state.credentials.password}
+            onChange={handleChange}
+          />
+          <button>Log in</button>
+        </form>
+
+
 
       <p id="error" className="error">{error}</p>
     </div>
