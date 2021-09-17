@@ -31,13 +31,21 @@ const BubblePage = () => {
   const saveEdit = (editColor) => {
     axiosWithAuth().put(`/colors/${editColor.id}`, editColor)
       .then(res => {
-        console.log("response from edit API", res.data.id)
-        // setColors([...colors,{}
-        //   `${res.data.id}`:{
-        //     color: res.data.color,
-        //     code: {hex: res.data.code.hex}
-        //   }
-        // ])
+        console.log("response from edit API", res.data)
+        console.log("editColorI", editColor)
+        const id = res.data.id
+        const newColors = [...colors];
+        // console.log("newcolors",newColors[res.data.id-1])
+        newColors[res.data.id-1] = {  
+          
+          color: editColor.color,
+          code : {
+            hex: editColor.code.hex
+          },
+          id : res.data.id ,
+       }
+       console.log("NEWCOLORS", newColors)
+        setColors(newColors)
       })
   };
 
@@ -45,6 +53,9 @@ const BubblePage = () => {
     axiosWithAuth().delete(`/colors/${colorToDelete.id}`, colorToDelete)
       .then(res => {
         console.log("deleting color", res.data)
+        const newColors = [...colors];
+        newColors.splice((res.data-1), 1);
+        setColors(newColors);
       })
   };
 
