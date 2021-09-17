@@ -3,6 +3,8 @@ import React from 'react';
 const EditMenu = (props) => {
   const {editColor, setEditColor, saveEdit, toggleEdit} = props;
   
+  console.log(editColor)
+
   const handleChange = (e) => {
     if (e.target.name === "colorName") {
       setEditColor({ ...editColor, color: e.target.value })

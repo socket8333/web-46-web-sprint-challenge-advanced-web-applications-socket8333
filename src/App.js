@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch, withRouter } from "react-router-dom";
 import axiosWithAuth from "./helpers/axiosWithAuth";
 import history from "./helpers/history";
 
@@ -12,8 +12,15 @@ function App() {
 
   const onLogout = (props)=> {
     console.log("LOGOUT")
-    axiosWithAuth()
-      
+    axiosWithAuth().post('/logout')
+      .then(res => {
+        localStorage.removeItem("token")
+        history.push('/login')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
   }
         // axiosWithAuth()
         //     .post('/logout')
@@ -26,7 +33,7 @@ function App() {
 
 
   return (
-    <Router>
+    <Router history={history}>
       <div className="App">
         <header>
           Color Picker Sprint Challenge
@@ -35,7 +42,7 @@ function App() {
 
         <Switch>
 
-          <PrivateRoute path="/bubbles" component={BubblePage}/>
+          <PrivateRoute exact path="/bubbles" component={BubblePage}/>
           <Route path="/login" component={Login}/>
           <Route path="/" component={Login}/>
   
